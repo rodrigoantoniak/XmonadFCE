@@ -1,6 +1,10 @@
 import XMonad
 import XMonad.Config.Xfce
-import XMonad.Hooks.ManageHelpers (isFullscreen, doCenterFloat, doFullFloat)
+import XMonad.Hooks.DynamicLog (dynamicLogWithPP, PP(..))
+import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks)
+import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
+import XMonad.Hooks.ManageHelpers (isFullscreen, doCenterFloat, doFocus, doFullFloat, doRaise)
+import XMonad.Util.SpawnOnce (spawnOnce)
 import Data.Monoid
 import System.Exit
 
@@ -164,7 +168,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = tiled ||| Mirror tiled ||| Full
+myLayout = avoidStruts(tiled ||| Mirror tiled ||| Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -193,18 +197,30 @@ myLayout = tiled ||| Mirror tiled ||| Full
 -- To match on the WM_NAME, you can use 'title' in the same way that
 -- 'className' and 'resource' are used below.
 --
-myManageHook = composeAll
+myManageHook = manageDocks <+> composeAll
     [ resource =? "galculator"          --> doCenterFloat
     , resource =? "vlc"                 --> doCenterFloat
+    , resource =? "xfce4-appfinder"     --> doCenterFloat
+    , resource =? "catfish"             --> doCenterFloat
     , title  =? "Whisker Menu"          --> doFloat
     , resource  =? "xfce4-notifyd"      --> doIgnore
-    , resource  =? "xfce4-panel"        --> doIgnore
+    , resource  =? "xfce4-panel"        --> doIgnore <+> doRaise
     , resource  =? "xfdesktop"          --> doIgnore
-    , isFullscreen                      --> doFullFloat ]
+    , isFullscreen                      --> doFocus ]
+
+------------------------------------------------------------------------
+-- Startup hook
+
+-- Perform an arbitrary action each time xmonad starts or is restarted
+-- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
+-- per-workspace layout choices.
+--
+-- By default, do nothing.
+myStartupHook = spawnOnce "compton &"
 
 ------------------------------------------------------------------------
 
-main = xmonad $ xfceConfig
+main = xmonad $ ewmhFullscreen . ewmh $ docks $ xfceConfig
     { terminal           = myTerminal
     , focusFollowsMouse  = myFocusFollowsMouse
     , clickJustFocuses   = myClickJustFocuses
@@ -221,4 +237,5 @@ main = xmonad $ xfceConfig
      -- hooks, layouts
     , layoutHook         = myLayout
     , manageHook         = myManageHook
+    , startupHook        = myStartupHook
     }
