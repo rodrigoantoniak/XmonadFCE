@@ -216,7 +216,9 @@ myManageHook = manageDocks <+> composeAll
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = spawnOnce "compton &"
+myStartupHook = do
+        spawnOnce "compton &"
+        spawnOnce "xfce4-panel --restart &"
 
 ------------------------------------------------------------------------
 
