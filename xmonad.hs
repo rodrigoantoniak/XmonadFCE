@@ -204,9 +204,10 @@ myManageHook = manageDocks <+> composeAll
     , resource =? "xfce4-appfinder"     --> doCenterFloat
     , resource =? "catfish"             --> doCenterFloat
     , title  =? "Whisker Menu"          --> doFloat
-    , resource  =? "xfce4-notifyd"      --> doIgnore
     , resource  =? "xfce4-panel"        --> doIgnore <+> doRaise
+    , resource  =? "xfce4-notifyd"      --> doIgnore
     , resource  =? "xfdesktop"          --> doIgnore
+    , resource  =? "xfce4-screensaver"  --> doIgnore
     , isFullscreen                      --> doFocus ]
 
 ------------------------------------------------------------------------
