@@ -52,10 +52,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
-    -- launch dmenu
+    -- launch xfce4-appfinder
     , ((modm,               xK_p     ), spawn "xfce4-appfinder")
 
-    -- launch gmrun
+    -- launch catfish
     , ((modm .|. shiftMask, xK_p     ), spawn "catfish")
 
     -- close focused window
@@ -70,7 +70,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Resize viewed windows to the correct size
     , ((modm,               xK_n     ), refresh)
 
-    -- Move focus to the next window
+    -- Shift the windows until the focused one gets to the master area
     , ((modm,               xK_Tab   ), windows W.shiftMaster )
 
     -- Move focus to the next window
@@ -106,17 +106,17 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Deincrement the number of windows in the master area
     , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
 
-    -- Toggle the status bar gap
-    -- Use this binding with avoidStruts from Hooks.ManageDocks.
-    -- See also the statusBar function from Hooks.DynamicLog.
-    --
-    -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
+    -- Launch Thunar
+    , ((modm              , xK_f     ), spawn "thunar")
 
-    -- Quit xmonad
-    , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
+    -- Launch the browser (in this case, LibreWolf)
+    , ((modm              , xK_b     ), spawn "librewolf")
 
-    -- Restart xmonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    -- Quit xfce4-session
+    , ((modm .|. shiftMask, xK_q     ), spawn "xfce4-session-logout --logout")
+
+    -- Manage xfce4-session
+    , ((modm              , xK_q     ), spawn "xfce4-session-logout")
     ]
     ++
 
@@ -200,6 +200,7 @@ myLayout = avoidStruts(tiled ||| Mirror tiled ||| Full)
 myManageHook = manageDocks <+> composeAll
     [ resource =? "galculator"          --> doCenterFloat
     , resource =? "vlc"                 --> doCenterFloat
+    , resource =? "xfrun4"              --> doCenterFloat
     , resource =? "xfce4-appfinder"     --> doCenterFloat
     , resource =? "catfish"             --> doCenterFloat
     , title  =? "Whisker Menu"          --> doFloat
