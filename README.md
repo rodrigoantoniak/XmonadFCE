@@ -8,5 +8,8 @@ Luego, es necesario agregar `xmonad --replace` para que se ejecute al iniciar se
 Configuración > Sesión e inicio > Autoarranque de aplicaciones
 ```
 y se añade la aplicación.
-Adicionalmente, puede requerirse instalar xfce4-screensaver (si es que aún no se encuentra dentro del sistema).
+Adicionalmente, debe borrarse todas las combinaciones de teclado que vienen incluidas en XFCE; se encuentran en:
+``` sh
+Configuración > Teclado > Atajos de las aplicaciones
+```
 Por último, reemplace `librewolf` dentro de xmonad.hs con su navegador Web preferido (si quiere conservar tal, bienvenido sea).
