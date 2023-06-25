@@ -3,7 +3,7 @@ import XMonad.Config.Xfce
 import XMonad.Hooks.DynamicLog (dynamicLogWithPP, PP(..))
 import XMonad.Hooks.ManageDocks (avoidStruts, docks, manageDocks)
 import XMonad.Hooks.EwmhDesktops (ewmh, ewmhFullscreen)
-import XMonad.Hooks.ManageHelpers (isFullscreen, doCenterFloat, doFocus, doFullFloat, doRaise)
+import XMonad.Hooks.ManageHelpers (isDialog, isFullscreen, doCenterFloat, doFocus, doFullFloat, doRaise)
 import XMonad.Util.SpawnOnce (spawnOnce)
 import Data.Monoid
 import System.Exit
@@ -42,7 +42,7 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#ff0000"
+myFocusedBorderColor = "#0022dd"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -52,11 +52,32 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
+    -- take a screenshot
+    , ((0,                  xK_Print ), spawn "xfce4-screenshooter")
+
+    -- take a rectangle screenshot
+    , ((shiftMask,          xK_Print ), spawn "xfce4-screenshooter -r")
+
+    -- take a window screenshot
+    , ((modm,               xK_Print ), spawn "xfce4-screenshooter -w")
+
+    -- launch xfrun4
+    , ((modm,              xK_Super_L), spawn "xfrun4")
+
+    -- launch xfce4-popup-whiskermenu
+    , ((0,                 xK_Super_L), spawn "xfce4-popup-whiskermenu")
+
+    -- launch XFCE Screen Settings
+    , ((shiftMask,         xK_Super_L), spawn "xfce4-display-settings --minimal")
+
     -- launch xfce4-appfinder
     , ((modm,               xK_p     ), spawn "xfce4-appfinder")
 
     -- launch catfish
     , ((modm .|. shiftMask, xK_p     ), spawn "catfish")
+
+    -- launch VLC
+    , ((modm,               xK_v     ), spawn "vlc")
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -198,17 +219,18 @@ myLayout = avoidStruts(tiled ||| Mirror tiled ||| Full)
 -- 'className' and 'resource' are used below.
 --
 myManageHook = manageDocks <+> composeAll
-    [ resource =? "galculator"          --> doCenterFloat
-    , resource =? "vlc"                 --> doCenterFloat
-    , resource =? "xfrun4"              --> doCenterFloat
-    , resource =? "xfce4-appfinder"     --> doCenterFloat
-    , resource =? "catfish"             --> doCenterFloat
-    , title  =? "Whisker Menu"          --> doFloat
-    , resource  =? "xfce4-panel"        --> doIgnore <+> doRaise
-    , resource  =? "xfce4-notifyd"      --> doIgnore
-    , resource  =? "xfdesktop"          --> doIgnore
-    , resource  =? "xfce4-screensaver"  --> doIgnore
-    , isFullscreen                      --> doFocus ]
+    [ resource  =? "galculator"              --> doCenterFloat
+    , resource  =? "xfrun4"                  --> doCenterFloat
+    , resource  =? "xfce4-appfinder"         --> doCenterFloat
+    , resource  =? "catfish"                 --> doCenterFloat
+    , className =? "Wrapper-2.0"             --> doCenterFloat
+    , isDialog                               --> doCenterFloat
+    , resource  =? "xfce4-popup-whiskermenu" --> doFloat
+    , resource  =? "xfce4-panel"             --> doIgnore <+> doRaise
+    , resource  =? "xfce4-notifyd"           --> doIgnore
+    , resource  =? "xfdesktop"               --> doIgnore
+    , resource  =? "xfce4-screensaver"       --> doIgnore
+    , isFullscreen                           --> doFocus ]
 
 ------------------------------------------------------------------------
 -- Startup hook
